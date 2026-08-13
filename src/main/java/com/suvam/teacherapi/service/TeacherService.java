@@ -4,6 +4,8 @@ import com.suvam.teacherapi.model.Teacher;
 import com.suvam.teacherapi.repository.TeacherRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TeacherService {
 
@@ -15,5 +17,9 @@ public class TeacherService {
 
     public Teacher addTeacher(Teacher teacher) {
         return repo.save(teacher);
+    }
+
+    public List<Teacher> getAllTeachers() {
+        return repo.findAll();
     }
 }
