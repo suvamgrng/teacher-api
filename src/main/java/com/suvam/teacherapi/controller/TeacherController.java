@@ -19,7 +19,7 @@ public class TeacherController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> addTeacher(@RequestBody Teacher teacher) {
+    public ResponseEntity<Teacher> addTeacher(@RequestBody Teacher teacher) {
         return ResponseEntity.ok(service.addTeacher(teacher));
     }
 }
