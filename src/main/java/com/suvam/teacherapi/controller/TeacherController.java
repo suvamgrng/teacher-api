@@ -26,4 +26,9 @@ public class TeacherController {
     public ResponseEntity<List<Teacher>> getALlTeachers() {
         return ResponseEntity.ok(service.getAllTeachers());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Teacher> getTeacher(@PathVariable long id) {
+        return ResponseEntity.ok(service.getTeacher(id));
+    }
 }

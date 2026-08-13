@@ -5,6 +5,7 @@ import com.suvam.teacherapi.repository.TeacherRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class TeacherService {
@@ -21,5 +22,10 @@ public class TeacherService {
 
     public List<Teacher> getAllTeachers() {
         return repo.findAll();
+    }
+
+    public Teacher getTeacher(long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Teacher not found with id " + id));
     }
 }
