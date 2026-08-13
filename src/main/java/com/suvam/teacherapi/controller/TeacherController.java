@@ -31,4 +31,10 @@ public class TeacherController {
     public ResponseEntity<Teacher> getTeacher(@PathVariable long id) {
         return ResponseEntity.ok(service.getTeacher(id));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Teacher> updateTeacher(@PathVariable long id,
+                                                 @RequestBody Teacher teacher) {
+        return ResponseEntity.ok(service.updateTeacher(id, teacher));
+    }
 }

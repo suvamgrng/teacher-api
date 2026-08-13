@@ -28,4 +28,14 @@ public class TeacherService {
         return repo.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Teacher not found with id " + id));
     }
+
+    public Teacher updateTeacher(long id,
+                                 Teacher teacher) {
+       return repo.findById(id)
+               .map(existTeacher -> {
+                   teacher.setId(id);
+                   return repo.save(teacher);
+               })
+               .orElseThrow(() -> new NoSuchElementException("Teacher not found with id " + id));
+    }
 }
