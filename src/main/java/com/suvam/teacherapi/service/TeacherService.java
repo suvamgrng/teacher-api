@@ -38,4 +38,13 @@ public class TeacherService {
                })
                .orElseThrow(() -> new NoSuchElementException("Teacher not found with id " + id));
     }
+
+    public Teacher deleteTeacher(long id) {
+        return repo.findById(id)
+                .map(existingTeacher -> {
+                            repo.deleteById(id);
+                            return existingTeacher;
+                        }
+                ).orElseThrow(() -> new NoSuchElementException("Teacher not found with id " + id));
+    }
 }
