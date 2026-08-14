@@ -1,5 +1,6 @@
 package com.suvam.teacherapi.service;
 
+import com.suvam.teacherapi.exception.TeacherNotFoundException;
 import com.suvam.teacherapi.model.Teacher;
 import com.suvam.teacherapi.repository.TeacherRepo;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class TeacherService {
 
     public Teacher getTeacher(long id) {
         return repo.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Teacher not found with id " + id));
+                .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
     }
 
     public Teacher updateTeacher(long id,

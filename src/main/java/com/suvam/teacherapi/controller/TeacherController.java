@@ -1,10 +1,15 @@
 package com.suvam.teacherapi.controller;
 
+import com.suvam.teacherapi.exception.ErrorResponse;
+import com.suvam.teacherapi.exception.TeacherNotFoundException;
 import com.suvam.teacherapi.model.Teacher;
 import com.suvam.teacherapi.service.TeacherService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -28,8 +33,27 @@ public class TeacherController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Teacher> getTeacher(@PathVariable long id) {
-        return ResponseEntity.ok(service.getTeacher(id));
+    public ResponseEntity<?> getTeacher(
+            @PathVariable long id,
+            HttpServletRequest request) {
+
+        try {
+            return ResponseEntity.ok(service.getTeacher(id));
+
+        } catch (TeacherNotFoundException e) {
+
+            ErrorResponse error = new ErrorResponse(
+                    LocalDateTime.now(),
+                    HttpStatus.NOT_FOUND.value(),
+                    HttpStatus.NOT_FOUND.getReasonPhrase(),
+                    e.getMessage(),
+                    request.getRequestURI()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(error);
+        }
     }
 
     @PutMapping("/{id}")
