@@ -17,12 +17,12 @@ public class TeacherController {
         this.service = service;
     }
 
-    @PostMapping("/register")
+    @PostMapping()
     public ResponseEntity<Teacher> addTeacher(@RequestBody Teacher teacher) {
         return ResponseEntity.ok(service.addTeacher(teacher));
     }
 
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<List<Teacher>> getALlTeachers() {
         return ResponseEntity.ok(service.getAllTeachers());
     }
