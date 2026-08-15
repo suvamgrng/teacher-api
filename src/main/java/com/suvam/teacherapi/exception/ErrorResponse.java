@@ -10,4 +10,21 @@ public record ErrorResponse(
         String message,
         Map<String, String> errors,
         String path
-) {}
+) {
+    public ErrorResponse(
+            LocalDateTime timestamp,
+            int status,
+            String error,
+            String message,
+            String path
+    ) {
+        this(
+                timestamp,
+                status,
+                error,
+                message,
+                null,  // Set value of errors null if this constructor is called
+                path
+        );
+    }
+}
