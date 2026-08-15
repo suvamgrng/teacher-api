@@ -68,6 +68,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    // Catch this exception when Correct endpoint + correct type but have invalid data
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleNotValid(
             MethodArgumentNotValidException exception,
@@ -92,6 +93,7 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);
     }
+
 
     // Catch unpredicted exception that are not explicitly added in this GlobalExceptionHandler
     @ExceptionHandler(Exception.class)
