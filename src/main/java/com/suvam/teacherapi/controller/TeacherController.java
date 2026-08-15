@@ -1,16 +1,12 @@
 package com.suvam.teacherapi.controller;
 
-import com.suvam.teacherapi.exception.TeacherNotFoundException;
 import com.suvam.teacherapi.model.Teacher;
 import com.suvam.teacherapi.service.TeacherService;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/teachers")
@@ -23,7 +19,7 @@ public class TeacherController {
     }
 
     @PostMapping()
-    public ResponseEntity<Teacher> addTeacher(@RequestBody Teacher teacher) {
+    public ResponseEntity<Teacher> addTeacher(@Valid @RequestBody Teacher teacher) {
         return ResponseEntity.ok(service.addTeacher(teacher));
     }
 
