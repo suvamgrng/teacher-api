@@ -6,7 +6,6 @@ import com.suvam.teacherapi.repository.TeacherRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class TeacherService {
@@ -37,7 +36,7 @@ public class TeacherService {
                    teacher.setId(id);
                    return repo.save(teacher);
                })
-               .orElseThrow(() -> new NoSuchElementException("Teacher not found with id " + id));
+               .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
     }
 
     public Teacher deleteTeacher(long id) {
@@ -46,6 +45,6 @@ public class TeacherService {
                             repo.deleteById(id);
                             return existingTeacher;
                         }
-                ).orElseThrow(() -> new NoSuchElementException("Teacher not found with id " + id));
+                ).orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
     }
 }
