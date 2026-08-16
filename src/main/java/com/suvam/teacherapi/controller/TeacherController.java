@@ -2,6 +2,7 @@ package com.suvam.teacherapi.controller;
 
 import com.suvam.teacherapi.model.Teacher;
 import com.suvam.teacherapi.service.TeacherService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +19,12 @@ public class TeacherController {
     }
 
     @PostMapping()
-    public ResponseEntity<Teacher> addTeacher(@RequestBody Teacher teacher) {
+    public ResponseEntity<Teacher> addTeacher(@Valid @RequestBody Teacher teacher) {
         return ResponseEntity.ok(service.addTeacher(teacher));
     }
 
     @GetMapping()
-    public ResponseEntity<List<Teacher>> getALlTeachers() {
+    public ResponseEntity<List<Teacher>> getAllTeachers() {
         return ResponseEntity.ok(service.getAllTeachers());
     }
 
