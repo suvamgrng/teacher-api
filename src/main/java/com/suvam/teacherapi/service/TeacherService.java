@@ -1,6 +1,7 @@
 package com.suvam.teacherapi.service;
 
 import com.suvam.teacherapi.dto.TeacherRequestDTO;
+import com.suvam.teacherapi.dto.TeacherResponseDTO;
 import com.suvam.teacherapi.exception.TeacherNotFoundException;
 import com.suvam.teacherapi.mapper.TeacherMapper;
 import com.suvam.teacherapi.model.Teacher;
@@ -20,9 +21,11 @@ public class TeacherService {
         this.teacherMapper = teacherMapper;
     }
 
-    public Teacher addTeacher(TeacherRequestDTO request) {
-       Teacher addTeacher = teacherMapper.toEntity(request);
-        return repo.save(addTeacher);
+    public TeacherResponseDTO addTeacher(TeacherRequestDTO request) {
+       Teacher teacher = teacherMapper.toEntity(request);
+       Teacher saveTeacher = repo.save(teacher);
+
+        return teacherMapper.toResponseDTO(saveTeacher);
     }
 
     public List<Teacher> getAllTeachers() {
