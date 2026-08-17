@@ -1,4 +1,19 @@
 package com.suvam.teacherapi.mapper;
 
+import com.suvam.teacherapi.dto.TeacherRequestDTO;
+import com.suvam.teacherapi.model.Teacher;
+
 public class TeacherMapper {
+
+    // Convert incoming request DTO object to Teacher Entity
+    public Teacher toEntity(TeacherRequestDTO requestDTO) {
+        Teacher teacher = new Teacher();
+        teacher.setFirstName(requestDTO.firstName());
+        teacher.setLastName(requestDTO.lastName());
+        teacher.setDepartment(requestDTO.department());
+        teacher.setEmail(requestDTO.email());
+        teacher.setSubject(requestDTO.subject());
+
+        return teacher;
+    }
 }
