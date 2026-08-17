@@ -28,8 +28,12 @@ public class TeacherService {
         return teacherMapper.toResponseDTO(saveTeacher);
     }
 
-    public List<Teacher> getAllTeachers() {
-        return repo.findAll();
+    //Return ResponseDTO object to client
+    public List<TeacherResponseDTO> getAllTeachers() {
+        return repo.findAll()
+                .stream()
+                .map(teacherMapper:: toResponseDTO)
+                .toList();
     }
 
     public Teacher getTeacher(long id) {
