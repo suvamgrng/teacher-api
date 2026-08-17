@@ -1,5 +1,6 @@
 package com.suvam.teacherapi.controller;
 
+import com.suvam.teacherapi.dto.TeacherRequestDTO;
 import com.suvam.teacherapi.model.Teacher;
 import com.suvam.teacherapi.service.TeacherService;
 import jakarta.validation.Valid;
@@ -19,8 +20,10 @@ public class TeacherController {
     }
 
     @PostMapping()
-    public ResponseEntity<Teacher> addTeacher(@Valid @RequestBody Teacher teacher) {
-        return ResponseEntity.ok(service.addTeacher(teacher));
+    public ResponseEntity<Teacher> addTeacher(
+            @Valid
+            @RequestBody TeacherRequestDTO request) {
+        return ResponseEntity.ok(service.addTeacher(request));
     }
 
     @GetMapping()

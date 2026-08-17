@@ -3,7 +3,9 @@ package com.suvam.teacherapi.mapper;
 import com.suvam.teacherapi.dto.TeacherRequestDTO;
 import com.suvam.teacherapi.dto.TeacherResponseDTO;
 import com.suvam.teacherapi.model.Teacher;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TeacherMapper {
 
     // Convert incoming request DTO object to Teacher Entity

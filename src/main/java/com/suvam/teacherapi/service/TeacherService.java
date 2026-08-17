@@ -1,6 +1,8 @@
 package com.suvam.teacherapi.service;
 
+import com.suvam.teacherapi.dto.TeacherRequestDTO;
 import com.suvam.teacherapi.exception.TeacherNotFoundException;
+import com.suvam.teacherapi.mapper.TeacherMapper;
 import com.suvam.teacherapi.model.Teacher;
 import com.suvam.teacherapi.repository.TeacherRepo;
 import org.springframework.stereotype.Service;
@@ -11,13 +13,16 @@ import java.util.List;
 public class TeacherService {
 
     private final TeacherRepo repo;
+    private final TeacherMapper teacherMapper;
 
-    public TeacherService(TeacherRepo repo) {
+    public TeacherService(TeacherRepo repo, TeacherMapper teacherMapper) {
         this.repo = repo;
+        this.teacherMapper = teacherMapper;
     }
 
-    public Teacher addTeacher(Teacher teacher) {
-        return repo.save(teacher);
+    public Teacher addTeacher(TeacherRequestDTO request) {
+       Teacher addTeacher = teacherMapper.toEntity(request);
+        return repo.save(addTeacher);
     }
 
     public List<Teacher> getAllTeachers() {
