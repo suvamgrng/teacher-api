@@ -41,12 +41,14 @@ public class TeacherService {
                 .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
     }
 
-    public Teacher updateTeacher(long id,
-                                 Teacher teacher) {
+    public TeacherResponseDTO updateTeacher(
+            long id,
+            TeacherRequestDTO request) {
        return repo.findById(id)
                .map(existTeacher -> {
-                   teacher.setId(id);
-                   return repo.save(teacher);
+                   teacherMapper.updateEntityFromDto(request, existTeacher); // apply new data to the FETCHED entity
+                   Teacher updatedTeacher = repo.save(existTeacher); // existTeacher is now updated so it is saved to db
+                   return teacherMapper.toResponseDTO(updatedTeacher); // convert to the correct return type HERE
                })
                .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
     }
@@ -57,6 +59,7 @@ public class TeacherService {
                             repo.deleteById(id);
                             return existingTeacher;
                         }
-                ).orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
+                )
+                .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
     }
 }
