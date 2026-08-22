@@ -1,5 +1,7 @@
 package com.suvam.teacherapi.controller;
 
+import com.suvam.teacherapi.dto.TeacherRequestDTO;
+import com.suvam.teacherapi.dto.TeacherResponseDTO;
 import com.suvam.teacherapi.model.Teacher;
 import com.suvam.teacherapi.service.TeacherService;
 import jakarta.validation.Valid;
@@ -19,28 +21,32 @@ public class TeacherController {
     }
 
     @PostMapping()
-    public ResponseEntity<Teacher> addTeacher(@Valid @RequestBody Teacher teacher) {
-        return ResponseEntity.ok(service.addTeacher(teacher));
+    public ResponseEntity<TeacherResponseDTO> addTeacher(
+            @Valid
+            @RequestBody TeacherRequestDTO request) {
+        return ResponseEntity.ok(service.addTeacher(request));
     }
 
     @GetMapping()
-    public ResponseEntity<List<Teacher>> getAllTeachers() {
+    public ResponseEntity<List<TeacherResponseDTO>> getAllTeachers() {
         return ResponseEntity.ok(service.getAllTeachers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Teacher> getTeacher(@PathVariable long id) {
+    public ResponseEntity<TeacherResponseDTO> getTeacher(@PathVariable long id) {
         return ResponseEntity.ok(service.getTeacher(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Teacher> updateTeacher(@PathVariable long id,
-                                                 @RequestBody Teacher teacher) {
-        return ResponseEntity.ok(service.updateTeacher(id, teacher));
+    public ResponseEntity<TeacherResponseDTO> updateTeacher(
+            @PathVariable long id,
+            @RequestBody TeacherRequestDTO request) {
+        return ResponseEntity.ok(service.updateTeacher(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Teacher> deleteTeacher(@PathVariable long id) {
-        return ResponseEntity.ok(service.deleteTeacher(id));
+    public ResponseEntity<Void> deleteTeacher(@PathVariable long id) {
+        service.deleteTeacher(id);
+        return ResponseEntity.noContent().build();
     }
 }

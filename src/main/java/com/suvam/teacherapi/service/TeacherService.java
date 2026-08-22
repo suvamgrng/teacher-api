@@ -1,6 +1,9 @@
 package com.suvam.teacherapi.service;
 
+import com.suvam.teacherapi.dto.TeacherRequestDTO;
+import com.suvam.teacherapi.dto.TeacherResponseDTO;
 import com.suvam.teacherapi.exception.TeacherNotFoundException;
+import com.suvam.teacherapi.mapper.TeacherMapper;
 import com.suvam.teacherapi.model.Teacher;
 import com.suvam.teacherapi.repository.TeacherRepo;
 import org.springframework.stereotype.Service;
@@ -11,40 +14,49 @@ import java.util.List;
 public class TeacherService {
 
     private final TeacherRepo repo;
+    private final TeacherMapper teacherMapper;
 
-    public TeacherService(TeacherRepo repo) {
+    public TeacherService(TeacherRepo repo, TeacherMapper teacherMapper) {
         this.repo = repo;
+        this.teacherMapper = teacherMapper;
     }
 
-    public Teacher addTeacher(Teacher teacher) {
-        return repo.save(teacher);
+    public TeacherResponseDTO addTeacher(TeacherRequestDTO request) {
+       Teacher teacher = teacherMapper.toEntity(request);
+       Teacher saveTeacher = repo.save(teacher);
+
+        return teacherMapper.toResponseDTO(saveTeacher);
     }
 
-    public List<Teacher> getAllTeachers() {
-        return repo.findAll();
+    //Return ResponseDTO object to client
+    public List<TeacherResponseDTO> getAllTeachers() {
+        return repo.findAll()
+                .stream()
+                .map(teacherMapper:: toResponseDTO)
+                .toList();
     }
 
-    public Teacher getTeacher(long id) {
+    public TeacherResponseDTO getTeacher(long id) {
         return repo.findById(id)
+                .map(teacherMapper::toResponseDTO)
                 .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
     }
 
-    public Teacher updateTeacher(long id,
-                                 Teacher teacher) {
+    public TeacherResponseDTO updateTeacher(
+            long id,
+            TeacherRequestDTO request) {
        return repo.findById(id)
                .map(existTeacher -> {
-                   teacher.setId(id);
-                   return repo.save(teacher);
+                   teacherMapper.updateEntityFromDto(request, existTeacher); // apply new data to the FETCHED entity
+                   Teacher updatedTeacher = repo.save(existTeacher); // existTeacher is now updated so it is saved to db
+                   return teacherMapper.toResponseDTO(updatedTeacher); // convert to the correct return type HERE
                })
                .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
     }
 
-    public Teacher deleteTeacher(long id) {
-        return repo.findById(id)
-                .map(existingTeacher -> {
-                            repo.deleteById(id);
-                            return existingTeacher;
-                        }
-                ).orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
+    public void deleteTeacher(long id) {
+        Teacher teacher = repo.findById(id)
+                .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
+        repo.delete(teacher);
     }
 }
