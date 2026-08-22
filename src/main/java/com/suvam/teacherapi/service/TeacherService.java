@@ -53,13 +53,9 @@ public class TeacherService {
                .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
     }
 
-    public Teacher deleteTeacher(long id) {
-        return repo.findById(id)
-                .map(existingTeacher -> {
-                            repo.deleteById(id);
-                            return existingTeacher;
-                        }
-                )
+    public void deleteTeacher(long id) {
+        Teacher teacher = repo.findById(id)
                 .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
+        repo.delete(teacher);
     }
 }
