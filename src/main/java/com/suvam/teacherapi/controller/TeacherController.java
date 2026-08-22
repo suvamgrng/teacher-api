@@ -33,7 +33,7 @@ public class TeacherController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Teacher> getTeacher(@PathVariable long id) {
+    public ResponseEntity<TeacherResponseDTO> getTeacher(@PathVariable long id) {
         return ResponseEntity.ok(service.getTeacher(id));
     }
 

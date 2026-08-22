@@ -36,8 +36,9 @@ public class TeacherService {
                 .toList();
     }
 
-    public Teacher getTeacher(long id) {
+    public TeacherResponseDTO getTeacher(long id) {
         return repo.findById(id)
+                .map(teacherMapper::toResponseDTO)
                 .orElseThrow(() -> new TeacherNotFoundException("Teacher not found with id " + id));
     }
 
