@@ -2,8 +2,13 @@ package com.suvam.teacherapi.controller;
 
 import com.suvam.teacherapi.dto.TeacherRequestDTO;
 import com.suvam.teacherapi.dto.TeacherResponseDTO;
+import com.suvam.teacherapi.exception.ErrorResponse;
 import com.suvam.teacherapi.model.Teacher;
 import com.suvam.teacherapi.service.TeacherService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +38,26 @@ public class TeacherController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+            summary = "Get a teacher by ID",
+            description = "You will get a single teacher once after you enter integer id. " +
+                    "Make sure that it don't accept other characters except int number."
+
+    )
+    @ApiResponse(
+            responseCode ="200",
+            description = "Teacher successfully found"
+    )
+    @ApiResponse(
+            responseCode ="404",
+            description = "Teacher not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = "You entered wrong id type",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+    )
     public ResponseEntity<TeacherResponseDTO> getTeacher(@PathVariable long id) {
         return ResponseEntity.ok(service.getTeacher(id));
     }
