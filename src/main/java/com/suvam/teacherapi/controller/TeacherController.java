@@ -56,6 +56,7 @@ public class TeacherController {
         return ResponseEntity.created(location).body(created);
     }
 
+    @GetMapping
     @Operation(
             summary = "Get all teachers",
             description = "Returns a list of all teachers currently stored. Returns an empty list if none exist."
@@ -64,7 +65,6 @@ public class TeacherController {
             responseCode = "200",
             description = "List retrieved successfully"
     )
-    @GetMapping
     public ResponseEntity<List<TeacherResponseDTO>> getAllTeachers() {
         return ResponseEntity.ok(service.getAllTeachers());
     }
@@ -74,7 +74,6 @@ public class TeacherController {
             summary = "Get a teacher by ID",
             description = "You will get a single teacher once after you enter integer id. " +
                     "Make sure that it don't accept other characters except int number."
-
     )
     @ApiResponse(
             responseCode ="200",
@@ -90,12 +89,29 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
+    @Operation(
+            summary = "Update an existing teacher",
+            description = "Updates a teacher's details by id. All fields are required and validated."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Updated successfully"
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = "Validation failed for one or more fields",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Teacher does not exist",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+    )
     public ResponseEntity<TeacherResponseDTO> updateTeacher(
             @PathVariable long id,
-            @RequestBody TeacherRequestDTO request) {
+            @Valid @RequestBody TeacherRequestDTO request) {
         return ResponseEntity.ok(service.updateTeacher(id, request));
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTeacher(@PathVariable long id) {
         service.deleteTeacher(id);
