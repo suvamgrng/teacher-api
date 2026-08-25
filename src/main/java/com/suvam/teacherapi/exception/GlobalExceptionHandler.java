@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // Correct endpoint + valid ID but teacher doesn't exist -> Call this exception
+    // Correct endpoint + valid ID but teacher doesn't exist -> Call this exception(404)
     @ExceptionHandler(TeacherNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleTeacherNotFound(
             TeacherNotFoundException exception,
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    // Correct endpoint + wrong ID type -> Call this exception
+    // Correct endpoint + wrong ID type -> Call this exception(400)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleTypeMismatch(
             HttpServletRequest request,
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    // Catch Wrong URL and wrong endpoint
+    // Catch Wrong URL and wrong endpoint(404)
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFound(
             HttpServletRequest request,
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    // Catch this exception when Correct endpoint + correct type but have invalid data
+    // Catch this exception when Correct endpoint + correct type but have invalid data(400)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleNotValid(
             MethodArgumentNotValidException exception,
@@ -114,7 +114,7 @@ public class GlobalExceptionHandler {
                 .body(errorResponse);
     }
 
-    // Catch unpredicted exception that are not explicitly added in this GlobalExceptionHandler
+    // Catch unpredicted exception that are not explicitly added in this GlobalExceptionHandler(500)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleInternalServerError(
             HttpServletRequest request,
