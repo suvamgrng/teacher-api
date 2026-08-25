@@ -49,11 +49,6 @@ public class TeacherController {
             description = "Teacher successfully found"
     )
     @ApiResponse(
-            responseCode ="404",
-            description = "Teacher not found",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
-    )
-    @ApiResponse(
             responseCode = "400",
             description = "You entered wrong id type",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
