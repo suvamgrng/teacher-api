@@ -3,7 +3,6 @@ package com.suvam.teacherapi.controller;
 import com.suvam.teacherapi.dto.TeacherRequestDTO;
 import com.suvam.teacherapi.dto.TeacherResponseDTO;
 import com.suvam.teacherapi.exception.ErrorResponse;
-import com.suvam.teacherapi.model.Teacher;
 import com.suvam.teacherapi.service.TeacherService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,7 +12,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -84,6 +82,11 @@ public class TeacherController {
             description = "You entered wrong id type",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
     )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Teacher not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+    )
     public ResponseEntity<TeacherResponseDTO> getTeacher(@PathVariable long id) {
         return ResponseEntity.ok(service.getTeacher(id));
     }
@@ -112,7 +115,21 @@ public class TeacherController {
             @Valid @RequestBody TeacherRequestDTO request) {
         return ResponseEntity.ok(service.updateTeacher(id, request));
     }
+
     @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Delete a teacher",
+            description = "Deletes a teacher record by id. No content is returned on success."
+    )
+    @ApiResponse(
+            responseCode = "204",
+            description = "Deleted successfully"
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Teacher not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+    )
     public ResponseEntity<Void> deleteTeacher(@PathVariable long id) {
         service.deleteTeacher(id);
         return ResponseEntity.noContent().build();
