@@ -45,7 +45,15 @@ public class TeacherController {
         return ResponseEntity.ok(service.addTeacher(request));
     }
 
-    @GetMapping()
+    @Operation(
+            summary = "Get all teachers",
+            description = "Returns a list of all teachers currently stored. Returns an empty list if none exist."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "List retrieved successfully"
+    )
+    @GetMapping
     public ResponseEntity<List<TeacherResponseDTO>> getAllTeachers() {
         return ResponseEntity.ok(service.getAllTeachers());
     }
