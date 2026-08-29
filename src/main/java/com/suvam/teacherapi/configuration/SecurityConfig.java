@@ -1,11 +1,15 @@
 package com.suvam.teacherapi.configuration;
 
+import com.suvam.teacherapi.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -26,4 +30,16 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
+    public AuthenticationProvider authenticationProvider(CustomUserDetailsService service) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(service);
+        provider.setPasswordEncoder(encoder());
+
+        return provider;
+    }
+
+    @Bean
+    public BCryptPasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
