@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -129,6 +130,24 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(errorResponse);
+    }
+
+    //Catch unauthorized access since the credentials are invalid (401)
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(
+            BadCredentialsException e,
+            HttpServletRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(errorResponse);
     }
 
