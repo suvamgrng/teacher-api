@@ -1,5 +1,6 @@
 package com.suvam.teacherapi.controller;
 
+import com.suvam.teacherapi.dto.LoginRequestDTO;
 import com.suvam.teacherapi.dto.RegisterRequestDTO;
 import com.suvam.teacherapi.dto.RegisterResponseDTO;
 import com.suvam.teacherapi.service.AuthService;
@@ -28,5 +29,11 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new RegisterResponseDTO("Registered successfully", request.username()));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDTO request) {
+        authService.login(request);
+        return ResponseEntity.ok("Login Successfully");
     }
 }
