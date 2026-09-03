@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
@@ -26,10 +27,16 @@ import java.time.LocalDateTime;
 @EnableWebSecurity
 public class SecurityConfig {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationEntryPoint restAuthenticationEntryPoint){
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            AuthenticationEntryPoint restAuthenticationEntryPoint,
+            AccessDeniedHandler restAccessDeniedHandler
+    ){
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(restAuthenticationEntryPoint))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(restAuthenticationEntryPoint)
+                        .accessDeniedHandler(restAccessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
 
@@ -71,6 +78,22 @@ public class SecurityConfig {
                     request.getRequestURI()
             );
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            mapper.writeValue(response.getWriter(), errorResponse);
+        };
+    }
+
+    @Bean
+    public AccessDeniedHandler restAccessDeniedHandler(ObjectMapper mapper) {
+        return (request, response, e) -> {
+            ErrorResponse errorResponse = new ErrorResponse(
+                    LocalDateTime.now(),
+                    HttpStatus.FORBIDDEN.value(),
+                    HttpStatus.FORBIDDEN.getReasonPhrase(),
+                    e.getMessage(),
+                    request.getRequestURI()
+            );
+            response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             mapper.writeValue(response.getWriter(), errorResponse);
         };
