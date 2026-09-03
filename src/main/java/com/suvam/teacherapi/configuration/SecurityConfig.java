@@ -4,6 +4,7 @@ import com.suvam.teacherapi.exception.ErrorResponse;
 import com.suvam.teacherapi.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers(
 
                                 "/api/v1/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/teachers/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
