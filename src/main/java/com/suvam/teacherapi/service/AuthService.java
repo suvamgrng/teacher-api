@@ -14,8 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +25,15 @@ public class AuthService {
     private final UsersRepo repo;
     private final PasswordEncoder encoder;
     private final AuthenticationManager authenticationManager;
+    private final SecurityContextRepository sessionContextRepository;
+    private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
 
-    public AuthService(UsersRepo repo, PasswordEncoder encoder, AuthenticationManager authenticationManager) {
+    public AuthService(UsersRepo repo, PasswordEncoder encoder, AuthenticationManager authenticationManager, SecurityContextRepository sessionContextRepository, SessionAuthenticationStrategy sessionAuthenticationStrategy) {
         this.repo = repo;
         this.encoder = encoder;
         this.authenticationManager = authenticationManager;
+        this.sessionContextRepository = sessionContextRepository;
+        this.sessionAuthenticationStrategy = sessionAuthenticationStrategy;
     }
 
     public void register(RegisterRequestDTO request) {
@@ -59,9 +62,13 @@ public class AuthService {
                             )
                     );
 
-            // Change session ID after successful authentication
-            new ChangeSessionIdAuthenticationStrategy()
-                    .onAuthentication(authentication, httpRequest, httpResponse);
+            // Regenerate the session ID to prevent session fixation
+            sessionAuthenticationStrategy
+                    .onAuthentication(
+                            authentication,
+                            httpRequest,
+                            httpResponse
+                    );
 
             SecurityContext context =
                     SecurityContextHolder.createEmptyContext();
@@ -69,10 +76,7 @@ public class AuthService {
             context.setAuthentication(authentication);
             SecurityContextHolder.setContext(context);
 
-            SecurityContextRepository repository =
-                    new HttpSessionSecurityContextRepository();
-
-            repository.saveContext(
+            sessionContextRepository.saveContext(
                     context,
                     httpRequest,
                     httpResponse
