@@ -4,6 +4,8 @@ import com.suvam.teacherapi.dto.LoginRequestDTO;
 import com.suvam.teacherapi.dto.RegisterRequestDTO;
 import com.suvam.teacherapi.dto.RegisterResponseDTO;
 import com.suvam.teacherapi.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +34,17 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDTO request) {
-        authService.login(request);
+    public ResponseEntity<String> login(
+            @Valid @RequestBody LoginRequestDTO request,
+            HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse) {
+
+        authService.login(
+                request,
+                httpRequest,
+                httpResponse
+        );
+
         return ResponseEntity.ok("Login Successfully");
     }
 }
