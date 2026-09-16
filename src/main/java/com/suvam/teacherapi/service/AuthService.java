@@ -28,7 +28,13 @@ public class AuthService {
     private final SecurityContextRepository sessionContextRepository;
     private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
 
-    public AuthService(UsersRepo repo, PasswordEncoder encoder, AuthenticationManager authenticationManager, SecurityContextRepository sessionContextRepository, SessionAuthenticationStrategy sessionAuthenticationStrategy) {
+    public AuthService(
+            UsersRepo repo,
+            PasswordEncoder encoder,
+            AuthenticationManager authenticationManager,
+            SecurityContextRepository sessionContextRepository,
+            SessionAuthenticationStrategy sessionAuthenticationStrategy
+    ) {
         this.repo = repo;
         this.encoder = encoder;
         this.authenticationManager = authenticationManager;
