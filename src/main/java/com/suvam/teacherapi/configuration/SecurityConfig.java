@@ -1,7 +1,9 @@
 package com.suvam.teacherapi.configuration;
 
 import com.suvam.teacherapi.exception.ErrorResponse;
+import com.suvam.teacherapi.security.JwtAuthenticationFilter;
 import com.suvam.teacherapi.service.CustomUserDetailsService;
+import com.suvam.teacherapi.service.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,14 +17,12 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
@@ -35,12 +35,18 @@ public class SecurityConfig {
             HttpSecurity http,
             AuthenticationEntryPoint restAuthenticationEntryPoint,
             AccessDeniedHandler restAccessDeniedHandler,
-            SecurityContextRepository sessionContextRepository){
+            JwtService jwtService,
+            CustomUserDetailsService customUserDetailsService,
+            ObjectMapper objectMapper){
 
+        JwtAuthenticationFilter jwtAuthenticationFilter =
+                JwtAuthenticationFilter.builder()
+                        .jwtService(jwtService)
+                        .userDetailsService(customUserDetailsService)
+                        .objectMapper(objectMapper)
+                        .build();
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .securityContext(securityContext -> securityContext
-                        .securityContextRepository(sessionContextRepository))
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(restAuthenticationEntryPoint)
                         .accessDeniedHandler(restAccessDeniedHandler))
@@ -51,7 +57,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/teachers/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
@@ -104,15 +111,5 @@ public class SecurityConfig {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             mapper.writeValue(response.getWriter(), errorResponse);
         };
-    }
-
-    @Bean
-    public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        return new ChangeSessionIdAuthenticationStrategy();
-    }
-
-    @Bean
-    public SecurityContextRepository securityContextRepository() {
-        return new HttpSessionSecurityContextRepository();
     }
 }

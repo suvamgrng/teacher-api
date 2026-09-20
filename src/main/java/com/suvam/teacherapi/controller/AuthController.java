@@ -1,11 +1,10 @@
 package com.suvam.teacherapi.controller;
 
 import com.suvam.teacherapi.dto.LoginRequestDTO;
+import com.suvam.teacherapi.dto.LoginResponseDTO;
 import com.suvam.teacherapi.dto.RegisterRequestDTO;
 import com.suvam.teacherapi.dto.RegisterResponseDTO;
 import com.suvam.teacherapi.service.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
@@ -33,17 +33,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
-            @Valid @RequestBody LoginRequestDTO request,
-            HttpServletRequest httpRequest,
-            HttpServletResponse httpResponse) {
+    public ResponseEntity<LoginResponseDTO> login(
+            @Valid @RequestBody LoginRequestDTO request) {
 
-        authService.login(
-                request,
-                httpRequest,
-                httpResponse
-        );
+        LoginResponseDTO response =
+                authService.login(request);
 
-        return ResponseEntity.ok("Login Successfully");
+        return ResponseEntity.ok(response);
     }
 }

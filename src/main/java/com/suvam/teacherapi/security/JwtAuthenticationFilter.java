@@ -38,7 +38,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;
     private static final String BEARER_PREFIX = "Bearer ";
-
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
