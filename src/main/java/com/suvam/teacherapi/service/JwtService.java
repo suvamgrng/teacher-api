@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -59,9 +58,5 @@ public class JwtService {
                 .expiration(new Date(expTime))
                 .signWith(getSignInKey())
                 .compact();
-    }
-
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
     }
 }
